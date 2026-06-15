@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кирилл Иванов — Веб-разработчик</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0F172A;
+      --bg2:      #1E293B;
+      --accent:   #38BDF8;
+      --accent2:  #0EA5E9;
+      --text:     #F8FAFC;
+      --muted:    #94A3B8;
+      --border:   #334155;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 760px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 100px;
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-name {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-name span { color: var(--accent); }
+
+    .hero-terminal {
+      font-family: var(--mono);
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      min-height: 2em;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .section-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg2); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-avatar {
+      position: relative;
+    }
+
+    .avatar-frame {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--bg) 0%, #1a3a52 100%);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* SVG-иллюстрация (адаптивная SVG-графика) */
+    .avatar-svg { width: 75%; height: 75%; }
+
+    .avatar-badge {
+      position: absolute;
+      bottom: -1rem;
+      right: -1rem;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(56,189,248,0.3);
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      background: rgba(56,189,248,0.05);
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio { background: var(--bg); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .gallery-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(56,189,248,0.12);
+    }
+
+    .gallery-card:first-child {
+      grid-column: span 2;
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb svg { width: 60%; height: 60%; }
+
+    .card-thumb-1 { background: linear-gradient(135deg, #0d2137 0%, #0b3b6b 100%); }
+    .card-thumb-2 { background: linear-gradient(135deg, #1a0d30 0%, #3b1070 100%); }
+    .card-thumb-3 { background: linear-gradient(135deg, #0d2a1a 0%, #0d5c35 100%); }
+    .card-thumb-4 { background: linear-gradient(135deg, #2a1a0d 0%, #6b3c10 100%); }
+    .card-thumb-5 { background: linear-gradient(135deg, #1a0d20 0%, #551065 100%); }
+
+    .card-body { padding: 1rem 1.25rem 1.25rem; }
+    .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .card-desc { font-size: 0.8rem; color: var(--muted); }
+
+    .card-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .card-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg2); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+    }
+
+    .contact-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .contact-info p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: var(--accent); }
+    .contact-link svg { flex-shrink: 0; }
+
+    /* FORM */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .form-field input,
+    .form-field textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus { border-color: var(--accent); }
+
+    .form-field textarea { min-height: 120px; }
+
+    .form-error {
+      font-size: 0.75rem;
+      color: #F87171;
+      min-height: 1em;
+    }
+
+    .form-submit {
+      padding: 0.8rem 2rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--accent2); transform: translateY(-1px); }
+    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .form-success {
+      display: none;
+      background: rgba(56,189,248,0.1);
+      border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      color: var(--accent);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-copy a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer-copy a:hover { text-decoration: underline; }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; }
+      .nav-links.open { display: flex; }
+      nav { flex-wrap: wrap; gap: 1rem; }
+      .burger { display: flex; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-avatar { max-width: 220px; margin: 0 auto; }
+
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-card:first-child { grid-column: span 2; }
+
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-card:first-child { grid-column: span 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVIGATION ── -->
+  <nav>
+    <a class="nav-logo" href="#home">ag.dev</a>
+    <button class="burger" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Главная</a></li>
+      <li><a href="#about">Обо мне</a></li>
+      <li><a href="#portfolio">Портфолио</a></li>
+      <li><a href="#contact">Контакты</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="home">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Доступен для новых проектов</div>
+      <h1 class="hero-name">Кирилл <span>Иванов</span></h1>
+      <div class="hero-terminal">
+        <span id="typed"></span><span class="cursor"></span>
+      </div>
+      <div class="hero-cta">
+        <a href="#portfolio" class="btn-primary">Смотреть портфолио</a>
+        <a href="#contact" class="btn-outline">Написать мне</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="container">
+      <div class="section-label">// about</div>
+      <h2 class="section-title">Обо мне</h2>
+      <div class="section-divider"></div>
+      <div class="about-grid">
+        <div class="about-avatar">
+          <div class="avatar-frame">
+            <div class="avatar-placeholder">
+              <!-- Адаптивная SVG-иллюстрация разработчика -->
+              <svg class="avatar-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Иллюстрация разработчика">
+                <!-- Фон-круг -->
+                <circle cx="100" cy="100" r="90" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+                <!-- Монитор -->
+                <rect x="45" y="70" width="110" height="75" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+                <rect x="50" y="75" width="100" height="62" rx="3" fill="#0d1f35"/>
+                <!-- Код на экране -->
+                <rect x="57" y="83" width="40" height="3" rx="1.5" fill="#38BDF8" opacity="0.9"/>
+                <rect x="57" y="91" width="60" height="3" rx="1.5" fill="#64748B" opacity="0.7"/>
+                <rect x="65" y="99" width="50" height="3" rx="1.5" fill="#38BDF8" opacity="0.6"/>
+                <rect x="65" y="107" width="35" height="3" rx="1.5" fill="#94A3B8" opacity="0.5"/>
+                <rect x="57" y="115" width="45" height="3" rx="1.5" fill="#38BDF8" opacity="0.8"/>
+                <rect x="57" y="123" width="25" height="3" rx="1.5" fill="#64748B" opacity="0.6"/>
+                <!-- Курсор мигающий -->
+                <rect x="83" y="123" width="2" height="8" rx="1" fill="#38BDF8" opacity="0.9">
+                  <animate attributeName="opacity" values="0.9;0;0.9" dur="1s" repeatCount="indefinite"/>
+                </rect>
+                <!-- Подставка -->
+                <rect x="88" y="145" width="24" height="8" rx="2" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+                <rect x="76" y="153" width="48" height="5" rx="2.5" fill="#334155"/>
+              </svg>
+            </div>
+          </div>
+          <div class="avatar-badge">4 года опыта</div>
+        </div>
+        <div class="about-text">
+          <p>
+            Привет! Я Кирилл — фронтенд-разработчик из Санкт-Петербурга. Специализируюсь на создании быстрых, доступных и красивых веб-интерфейсов. Мне нравится находить элегантные решения для сложных UX-задач и делать так, чтобы каждый проект работал безупречно на любом устройстве.
+          </p>
+          <p>
+            За 4 года работы я помог десяткам клиентов запустить продукты — от небольших лендингов до полноценных SaaS-платформ. Ценю чистый код, внимание к деталям и открытое общение на всех этапах работы.
+          </p>
+          <p>
+            Когда не пишу код — изучаю новые инструменты, участвую в открытых проектах или катаюсь на велосипеде по набережной.
+          </p>
+          <div class="skills-list">
+            <span class="skill-tag">HTML / CSS</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Next.js</span>
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">REST API</span>
+            <span class="skill-tag">PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTFOLIO ── -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-label">// portfolio</div>
+      <h2 class="section-title">Избранные работы</h2>
+      <div class="section-divider"></div>
+      <div class="gallery-grid">
+
+        <!-- Карточка 1 (широкая) -->
+        <div class="gallery-card">
+          <div class="card-thumb card-thumb-1">
+            <svg viewBox="0 0 240 135" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="20" y="20" width="200" height="95" rx="8" fill="#0F172A" stroke="#1E4D72" stroke-width="1.5"/>
+              <rect x="27" y="30" width="90" height="6" rx="3" fill="#38BDF8" opacity="0.8"/>
+              <rect x="27" y="42" width="130" height="4" rx="2" fill="#334155"/>
+              <rect x="27" y="51" width="110" height="4" rx="2" fill="#334155" opacity="0.6"/>
+              <rect x="130" y="28" width="82" height="50" rx="6" fill="#0b3260" stroke="#1E4D72" stroke-width="1"/>
+              <circle cx="156" cy="52" r="12" fill="#38BDF8" opacity="0.2" stroke="#38BDF8" stroke-width="1"/>
+              <path d="M151 52 L156 47 L161 52 L156 57 Z" fill="#38BDF8" opacity="0.8"/>
+              <rect x="27" y="75" width="55" height="20" rx="4" fill="#38BDF8" opacity="0.9"/>
+              <rect x="90" y="75" width="55" height="20" rx="4" fill="transparent" stroke="#334155" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Платформа онлайн-обучения EduFlow</div>
+            <div class="card-desc">Полнофункциональная LMS с видеоуроками, тестами и личным кабинетом для 5 000+ пользователей</div>
+            <div class="card-tags">
+              <span class="card-tag">React</span>
+              <span class="card-tag">Node.js</span>
+              <span class="card-tag">PostgreSQL</span>
+              <span class="card-tag">AWS S3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="gallery-card">
+          <div class="card-thumb card-thumb-2">
+            <svg viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="80" cy="45" r="30" stroke="#9333EA" stroke-width="1.5" fill="none" opacity="0.4"/>
+              <circle cx="80" cy="45" r="20" fill="#3b1070" stroke="#9333EA" stroke-width="1"/>
+              <path d="M72 45 L80 37 L88 45 L80 53 Z" fill="#A855F7" opacity="0.9"/>
+              <rect x="10" y="15" width="30" height="4" rx="2" fill="#9333EA" opacity="0.5"/>
+              <rect x="10" y="23" width="22" height="3" rx="1.5" fill="#6B21A8" opacity="0.5"/>
+              <rect x="120" y="65" width="28" height="4" rx="2" fill="#9333EA" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title">CRM-дашборд для агентства</div>
+            <div class="card-desc">Интерактивные графики, воронка продаж и управление сделками в реальном времени</div>
+            <div class="card-tags">
+              <span class="card-tag">Next.js</span>
+              <span class="card-tag">Recharts</span>
+              <span class="card-tag">Zustand</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="gallery-card">
+          <div class="card-thumb card-thumb-3">
+            <svg viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="25" y="20" width="110" height="50" rx="6" fill="#0d2a1a" stroke="#166534" stroke-width="1.5"/>
+              <rect x="33" y="30" width="50" height="4" rx="2" fill="#22C55E" opacity="0.8"/>
+              <rect x="33" y="40" width="65" height="3" rx="1.5" fill="#16A34A" opacity="0.5"/>
+              <rect x="33" y="48" width="45" height="3" rx="1.5" fill="#16A34A" opacity="0.4"/>
+              <rect x="95" y="28" width="30" height="14" rx="3" fill="#14532D" stroke="#166534"/>
+              <circle cx="110" cy="35" r="4" fill="#22C55E" opacity="0.7"/>
+              <rect x="25" y="78" width="110" height="2" rx="1" fill="#166534" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Лендинг для эко-бренда</div>
+            <div class="card-desc">Анимированный сайт с Intersection Observer и score Lighthouse 98+</div>
+            <div class="card-tags">
+              <span class="card-tag">HTML</span>
+              <span class="card-tag">CSS</span>
+              <span class="card-tag">GSAP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="gallery-card">
+          <div class="card-thumb card-thumb-4">
+            <svg viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="20" y="15" width="120" height="60" rx="6" fill="#1c1005" stroke="#92400E" stroke-width="1.5"/>
+              <rect x="28" y="23" width="104" height="44" rx="3" fill="#2a1a05"/>
+              <path d="M28 35 L68 35 L68 53 L28 53 Z" fill="#78350F" opacity="0.5"/>
+              <circle cx="48" cy="44" r="6" fill="#F59E0B" opacity="0.6"/>
+              <rect x="76" y="25" width="48" height="5" rx="2.5" fill="#F59E0B" opacity="0.7"/>
+              <rect x="76" y="35" width="35" height="4" rx="2" fill="#92400E" opacity="0.6"/>
+              <rect x="76" y="44" width="42" height="4" rx="2" fill="#92400E" opacity="0.5"/>
+              <rect x="76" y="53" width="28" height="8" rx="3" fill="#F59E0B" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Сайт-меню кофейни «Куппа»</div>
+            <div class="card-desc">Мобильное меню с фильтрацией, корзиной и интеграцией с кассовой системой</div>
+            <div class="card-tags">
+              <span class="card-tag">TypeScript</span>
+              <span class="card-tag">React</span>
+              <span class="card-tag">REST API</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="gallery-card">
+          <div class="card-thumb card-thumb-5">
+            <svg viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="15" y="10" width="130" height="70" rx="8" fill="#1a0d20" stroke="#6B21A8" stroke-width="1.5"/>
+              <circle cx="80" cy="45" r="22" fill="none" stroke="#A855F7" stroke-width="1" opacity="0.4"/>
+              <circle cx="80" cy="45" r="14" fill="none" stroke="#A855F7" stroke-width="1" opacity="0.6"/>
+              <circle cx="80" cy="45" r="6" fill="#A855F7" opacity="0.8"/>
+              <line x1="80" y1="23" x2="80" y2="67" stroke="#6B21A8" stroke-width="0.5" opacity="0.5"/>
+              <line x1="58" y1="45" x2="102" y2="45" stroke="#6B21A8" stroke-width="0.5" opacity="0.5"/>
+              <circle cx="80" cy="23" r="2.5" fill="#C084FC"/>
+              <circle cx="102" cy="45" r="2.5" fill="#C084FC"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Портал аналитики стартапа</div>
+            <div class="card-desc">Визуализация метрик роста, A/B-тестов и когортного анализа аудитории</div>
+            <div class="card-tags">
+              <span class="card-tag">Next.js</span>
+              <span class="card-tag">D3.js</span>
+              <span class="card-tag">Prisma</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-label">// contact</div>
+      <h2 class="section-title">Написать мне</h2>
+      <div class="section-divider"></div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Обсудим ваш проект</h3>
+          <p>Готов взяться за новый проект, помочь с доработкой существующего сайта или проконсультировать по технической части. Отвечаю в течение рабочего дня.</p>
+          <a href="tel:+79991234567" class="contact-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14v2.92z"/>
+            </svg>
+            +7 (999) 999-99-99
+          </a>
+          <a href="mailto:aleksey@gromov.dev" class="contact-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            kirill@ivanov.dev
+          </a>
+        </div>
+
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-field">
+            <label for="name">Ваше имя</label>
+            <input type="text" id="name" name="name" placeholder="Иван Иванов" autocomplete="name" />
+            <div class="form-error" id="nameError"></div>
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="ivan@example.com" autocomplete="email" />
+            <div class="form-error" id="emailError"></div>
+          </div>
+          <div class="form-field">
+            <label for="message">Сообщение</label>
+            <textarea id="message" name="message" placeholder="Расскажите о вашем проекте..."></textarea>
+            <div class="form-error" id="messageError"></div>
+          </div>
+          <button type="submit" class="form-submit" id="submitBtn">Отправить сообщение</button>
+          <div class="form-success" id="formSuccess">
+            ✓ Сообщение отправлено! Я свяжусь с вами в течение рабочего дня.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">
+        © 2025 Кирилл Иванов.
+        Все права защищены. &nbsp;|&nbsp;
+        <a href="mailto:kirill@ivanov.dev">kirill@ivanov.dev</a>
+        &nbsp;|&nbsp;
+        <a href="tel:+79999999999">+7 (999) 999-99-99</a>
+      </div>
+      <div class="social-links">
+        <!-- GitHub -->
+        <a href="https://github.com/" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a>
+        <!-- Telegram -->
+        <a href="https://t.me/" target="_blank" rel="noopener" class="social-link" aria-label="Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.944 0A12 12 0 1 0 24 12 12 12 0 0 0 11.944 0Zm5.992 8.265-1.974 9.306c-.146.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.93 14.602l-2.948-.917c-.64-.204-.654-.64.136-.95l11.521-4.44c.533-.194 1 .13.827.97Z"/>
+          </svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="https://linkedin.com/" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <!-- VK -->
+        <a href="https://vk.com/" target="_blank" rel="noopener" class="social-link" aria-label="ВКонтакте">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.523-2.049-1.713-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C5.01 11.784 4.38 9.079 4.38 8.59c0-.254.102-.491.593-.491h1.744c.441 0 .61.203.78.677.864 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.803c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.253-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.049.17.474-.085.712-.576.712z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Burger menu ──
+    const burger = document.getElementById('burger');
+    const navLinks = document.getElementById('navLinks');
+    burger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // ── Typing effect ──
+    const phrases = [
+      'Фронтенд-разработчик',
+      'React / Next.js',
+      'UI/UX энтузиаст',
+      'Открыт для фриланса'
+    ];
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+    const typedEl = document.getElementById('typed');
+
+    function type() {
+      const current = phrases[phraseIdx];
+      if (!deleting) {
+        typedEl.textContent = current.slice(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === current.length) {
+          deleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+      } else {
+        typedEl.textContent = current.slice(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % phrases.length;
+        }
+      }
+      setTimeout(type, deleting ? 60 : 90);
+    }
+    type();
+
+    // ── Form validation ──
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function showError(id, msg) {
+      document.getElementById(id).textContent = msg;
+    }
+
+    function validate() {
+      let valid = true;
+      showError('nameError', '');
+      showError('emailError', '');
+      showError('messageError', '');
+
+      if (!nameInput.value.trim()) {
+        showError('nameError', 'Пожалуйста, введите ваше имя');
+        valid = false;
+      }
+
+      const emailVal = emailInput.value.trim();
+      if (!emailVal) {
+        showError('emailError', 'Пожалуйста, введите email');
+        valid = false;
+      } else if (!emailVal.includes('@') || emailVal.indexOf('@') === 0 || emailVal.indexOf('@') === emailVal.length - 1) {
+        showError('emailError', 'Введите корректный email (должен содержать @)');
+        valid = false;
+      }
+
+      if (!messageInput.value.trim()) {
+        showError('messageError', 'Пожалуйста, введите сообщение');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!validate()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправляется...';
+
+      // Имитация отправки
+      setTimeout(() => {
+        form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+        submitBtn.style.display = 'none';
+        formSuccess.style.display = 'block';
+      }, 1200);
+    });
+  </script>
+</body>
+</html>
